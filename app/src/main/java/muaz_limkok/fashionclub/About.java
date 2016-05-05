@@ -11,6 +11,6 @@ public class About extends AppCompatActivity {
         setContentView(R.layout.about_layout);
 
         // group names and ids
-
+        // asd
     }
 }
