@@ -8,19 +8,29 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
+
+    RVAdapter rvAdapter;
     // lets start
     Toolbar toolbar;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
+    RecyclerView rv;
+    LinearLayoutManager linearLayoutManager;
 
+    private List<Item> items;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +38,16 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        initializeData();
+
+        rv = (RecyclerView)findViewById(R.id.rv);
+        rv.setHasFixedSize(true);
+        linearLayoutManager = new LinearLayoutManager(this);
+        rv.setLayoutManager(linearLayoutManager);
+
+
+        rvAdapter = new RVAdapter(items);
+        rv.setAdapter(rvAdapter);
         drawerLayout = (DrawerLayout)findViewById(R.id.drawerLayout);
         navigationView = (NavigationView)findViewById(R.id.shitstuff);
 
@@ -45,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (item.getItemId() == R.id.info) {
-                    Toast.makeText(MainActivity.this,"in",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this,"information",Toast.LENGTH_SHORT).show();
                     Intent infoIntent = new Intent(MainActivity.this,Information.class);
                     startActivity(infoIntent);
                 }
@@ -67,8 +87,10 @@ public class MainActivity extends AppCompatActivity {
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout, toolbar,R.string.app_name,
                 R.string.app_name);
 
+        // listening to the button
         drawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
+
 
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -80,6 +102,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         */
+    }
+
+
+    private void initializeData(){
+        items = new ArrayList<>();
+        items.add(new Item("Basic V", "RM 139", R.drawable.basic_v_profile_139));
+        items.add(new Item("Crocodile tee", "RM 139", R.drawable.crocodile_tee_profile_139));
+        items.add(new Item("Disco fever top", "RM 79", R.drawable.disco_fever_top_profile_79));
+        items.add(new Item("Double Zipper", "RM 229", R.drawable.double_zipper_profile_229));
+        items.add(new Item("Essential Mesh Sleeves", "RM 199", R.drawable.ess_mesh_sleeves_sweater_fprofile_199));
+        items.add(new Item("Essential Mesh Sleeves", "RM 199", R.drawable.ess_mesh_sleeves_sweater_profile_199));
+        items.add(new Item("Fashion Club 10", "RM 99", R.drawable.fashionclub10_thumb_99));
+        items.add(new Item("Leather Dungaree Dress", "RM 235", R.drawable.leather_dungaree_dress_profile_235));
+        items.add(new Item("Mermaid Mesh Skirt", "RM 299", R.drawable.mermaid_mesh_skirt_prof_299));
+        items.add(new Item("No Excuses", "RM 99", R.drawable.no_excuses_tee_profile_99));
+        items.add(new Item("Snake Skin Sweater", "RM 198", R.drawable.snakeskinsweater_thumb_198));
+        items.add(new Item("Windbreaker pocket sweater", "RM 229", R.drawable.windbreaker_pocket_sweater_profile_229));
     }
 
     @Override
