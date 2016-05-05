@@ -10,6 +10,7 @@ public class About extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.about_layout);
 
+        // group names and ids
 
     }
 }
