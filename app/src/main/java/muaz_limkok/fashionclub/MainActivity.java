@@ -1,5 +1,6 @@
 package muaz_limkok.fashionclub;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -39,14 +40,20 @@ public class MainActivity extends AppCompatActivity {
 
                 if (item.getItemId() == R.id.map) {
                     Toast.makeText(MainActivity.this,"map",Toast.LENGTH_SHORT).show();
+                    Intent mapIntent = new Intent(MainActivity.this,MapClass.class);
+                    startActivity(mapIntent);
                 }
 
                 if (item.getItemId() == R.id.info) {
                     Toast.makeText(MainActivity.this,"in",Toast.LENGTH_SHORT).show();
+                    Intent infoIntent = new Intent(MainActivity.this,Information.class);
+                    startActivity(infoIntent);
                 }
 
                 if (item.getItemId() == R.id.about) {
                     Toast.makeText(MainActivity.this,"ab",Toast.LENGTH_SHORT).show();
+                    Intent aboutIntent = new Intent(MainActivity.this,About.class);
+                    startActivity(aboutIntent);
                 }
 
                 // rest of the menu
