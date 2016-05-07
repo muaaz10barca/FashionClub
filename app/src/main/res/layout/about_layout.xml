@@ -15,4 +15,17 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:title="About" />
 
+    <TextView
+        android:text="We are a team of students in Limkokwing University, Currently in Semester 3. We developed this application to help FashionClub reach to mobile users and expand their presence"
+        android:layout_width="match_parent"
+        android:textColor="#800080"
+        android:layout_margin="12dp"
+        android:layout_height="wrap_content" />
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/rv_person"
+        android:layout_margin="12dp"
+        />
+
 </LinearLayout>
