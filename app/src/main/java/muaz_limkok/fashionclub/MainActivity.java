@@ -49,6 +49,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private GoogleApiClient mGoogleApiClient;
 
     public static Place userPlace = null;
+    public static double lati = 0;
+    public static double longi = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,8 +70,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         rvAdapter = new RVAdapter(items);
         rv.setAdapter(rvAdapter);
 
-        FindUserBackground findUserBackground = new FindUserBackground();
-        findUserBackground.execute();
+
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         navigationView = (NavigationView) findViewById(R.id.shitstuff);
@@ -121,6 +123,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 .enableAutoManage(this, this)
                 .build();
 
+        FindUserBackground findUserBackground = new FindUserBackground();
+        findUserBackground.execute();
+
 
 
     }
@@ -146,17 +151,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 @Override
                 public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
                     for (PlaceLikelihood placeLikelihood : likelyPlaces) {
-                        /*
+
                         Log.i("muaaz10", String.format("Place '%s' has likelihood: %g",
                                 placeLikelihood.getPlace().getName(),
                                 placeLikelihood.getLikelihood()));
-                                */
-                        userPlace = placeLikelihood.getPlace();
+
+                        lati = placeLikelihood.getPlace().getLatLng().latitude;
+                        longi = placeLikelihood.getPlace().getLatLng().longitude;
                         break;
 
                     }
+
                     likelyPlaces.release();
-                    Log.i("muaaz10", (String) userPlace.getName());
+
                 }
             });
 
