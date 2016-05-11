@@ -30,7 +30,7 @@ public class Information extends YouTubeFailureRecoveryActivity {
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
         if (!b) {
-            youTubePlayer.cueVideo("wKJ9KzGQq0w");
+            youTubePlayer.cueVideo("8enh6fnqHew");
         }
     }
 

@@ -1,25 +1,39 @@
 package muaz_limkok.fashionclub;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceLikelihood;
+import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
+import com.google.android.gms.location.places.Places;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
 
     RVAdapter rvAdapter;
@@ -31,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
     LinearLayoutManager linearLayoutManager;
 
     private List<Item> items;
+
+    private GoogleApiClient mGoogleApiClient;
+
+    public static Place userPlace = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         initializeData();
 
-        rv = (RecyclerView)findViewById(R.id.rv);
+        rv = (RecyclerView) findViewById(R.id.rv);
         rv.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(this);
         rv.setLayoutManager(linearLayoutManager);
@@ -48,8 +66,12 @@ public class MainActivity extends AppCompatActivity {
 
         rvAdapter = new RVAdapter(items);
         rv.setAdapter(rvAdapter);
-        drawerLayout = (DrawerLayout)findViewById(R.id.drawerLayout);
-        navigationView = (NavigationView)findViewById(R.id.shitstuff);
+
+        FindUserBackground findUserBackground = new FindUserBackground();
+        findUserBackground.execute();
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        navigationView = (NavigationView) findViewById(R.id.shitstuff);
 
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -59,20 +81,20 @@ public class MainActivity extends AppCompatActivity {
                 drawerLayout.closeDrawers();
 
                 if (item.getItemId() == R.id.map) {
-                    Toast.makeText(MainActivity.this,"map",Toast.LENGTH_SHORT).show();
-                    Intent mapIntent = new Intent(MainActivity.this,MapClass.class);
+                    Toast.makeText(MainActivity.this, "map", Toast.LENGTH_SHORT).show();
+                    Intent mapIntent = new Intent(MainActivity.this, MapClass.class);
                     startActivity(mapIntent);
                 }
 
                 if (item.getItemId() == R.id.info) {
-                    Toast.makeText(MainActivity.this,"information",Toast.LENGTH_SHORT).show();
-                    Intent infoIntent = new Intent(MainActivity.this,Information.class);
+                    Toast.makeText(MainActivity.this, "information", Toast.LENGTH_SHORT).show();
+                    Intent infoIntent = new Intent(MainActivity.this, Information.class);
                     startActivity(infoIntent);
                 }
 
                 if (item.getItemId() == R.id.about) {
-                    Toast.makeText(MainActivity.this,"ab",Toast.LENGTH_SHORT).show();
-                    Intent aboutIntent = new Intent(MainActivity.this,About.class);
+                    Toast.makeText(MainActivity.this, "ab", Toast.LENGTH_SHORT).show();
+                    Intent aboutIntent = new Intent(MainActivity.this, About.class);
                     startActivity(aboutIntent);
                 }
 
@@ -84,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
         // setup drawer toggle
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout, toolbar,R.string.app_name,
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name,
                 R.string.app_name);
 
         // listening to the button
@@ -92,16 +114,54 @@ public class MainActivity extends AppCompatActivity {
         mDrawerToggle.syncState();
 
 
-        /*
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(this, this)
+                .build();
+
+
+
+    }
+
+    private class FindUserBackground extends AsyncTask<Void,Void,Void>{
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return null;
             }
-        });
-        */
+            PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
+                    .getCurrentPlace(mGoogleApiClient, null);
+            result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
+                @Override
+                public void onResult(PlaceLikelihoodBuffer likelyPlaces) {
+                    for (PlaceLikelihood placeLikelihood : likelyPlaces) {
+                        /*
+                        Log.i("muaaz10", String.format("Place '%s' has likelihood: %g",
+                                placeLikelihood.getPlace().getName(),
+                                placeLikelihood.getLikelihood()));
+                                */
+                        userPlace = placeLikelihood.getPlace();
+                        break;
+
+                    }
+                    likelyPlaces.release();
+                    Log.i("muaaz10", (String) userPlace.getName());
+                }
+            });
+
+            return null;
+        }
     }
 
 
@@ -144,6 +204,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
 }
 
 
