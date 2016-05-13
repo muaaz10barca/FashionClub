@@ -39,6 +39,12 @@
             />
         <activity
             android:screenOrientation="portrait"
+            android:name=".Cart"
+            android:label="Cart"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+        <activity
+            android:screenOrientation="portrait"
             android:name=".Information"
             android:label="Information"
             android:theme="@style/AppTheme.NoActionBar"

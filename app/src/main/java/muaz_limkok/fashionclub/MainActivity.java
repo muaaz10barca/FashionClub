@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     private GoogleApiClient mGoogleApiClient;
 
+    public static List<Item> purchases;
+
     public static Place userPlace = null;
     public static double lati = 0;
     public static double longi = 0;
@@ -60,14 +62,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         setSupportActionBar(toolbar);
 
         initializeData();
-
+        purchases = new ArrayList<>();
         rv = (RecyclerView) findViewById(R.id.rv);
         rv.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(this);
         rv.setLayoutManager(linearLayoutManager);
 
 
-        rvAdapter = new RVAdapter(items);
+        rvAdapter = new RVAdapter(items,this);
         rv.setAdapter(rvAdapter);
 
 
@@ -204,6 +206,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(MainActivity.this,Cart.class);
+            startActivity(intent);
             return true;
         }
 
