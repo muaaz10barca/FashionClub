@@ -37,6 +37,7 @@ public class About extends AppCompatActivity {
         persons.add(new Person("Muaadh Mohammed Salem","11004219","muaaz10barca@gmail.com"));
         persons.add(new Person("Ala Mahmood Abullah Hassan","110042593","alamahmoodhassan@gmail.com"));
         persons.add(new Person("Islam bouhaha","110042201","ibouhaha67@gmail.com"));
+        persons.add(new Person("Alaa Aldeen Alobahi","110042803","alaa12alobahi@gmail.com"));
 
     }
 }
